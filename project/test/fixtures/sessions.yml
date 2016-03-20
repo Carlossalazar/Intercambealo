@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  token: MyString
+  date: 2016-03-20 10:06:20
+  id_user: 1
+
+two:
+  token: MyString
+  date: 2016-03-20 10:06:20
+  id_user: 1
