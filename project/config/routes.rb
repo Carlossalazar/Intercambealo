@@ -1,12 +1,22 @@
 Rails.application.routes.draw do
-  resources :sessions
 
-  resources :transactions
+  
+  resources :sessions do
+    collection do
+      post 'authenticate'
+      get 'logout'
+      end
+    end
 
-  resources :users
+  namespace :api, path: '/', constraints: { subdomain: 'api' } do 
 
-  resources :products
+    resources :transactions
 
+    resources :products
+
+    resources :users
+
+  end
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
