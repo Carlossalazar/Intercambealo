@@ -8,6 +8,7 @@ class ProductsController < ApplicationController
   # GET /products.json
   def index
     @products = Product.all
+    render json: @products, status: 200
   end
 
   # GET /products/1
@@ -30,9 +31,9 @@ class ProductsController < ApplicationController
     product = Product.new(product_params)
 
       if product.save
-       render json: product, status: :created 
+       render json: product, status: :created
       else
-        render json: product.errors, status: 422 
+        render json: product.errors, status: 422
       end
     end
 
