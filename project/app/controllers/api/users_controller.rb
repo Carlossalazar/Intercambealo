@@ -1,15 +1,23 @@
+module Api
+
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   # GET /users
   # GET /users.json
   def index
-    @users = User.all
+    @users = User.all 
+    if name = params[:firstname]
+      @users = @users.where(firstname: fistname)
+    end
+    render json: @users, status: 200
   end
 
   # GET /users/1
   # GET /users/1.json
   def show
+     @user = User.find(params[:id])
+    render json: @user, status: 200
   end
 
   # GET /users/new
@@ -26,27 +34,34 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
 
-    respond_to do |format|
-      if @user.save
-        format.html { redirect_to @user, notice: 'User was successfully created.' }
-        format.json { render :show, status: :created, location: @user }
+    if @user.save
+       
+        render json: @users, status: 201
       else
-        format.html { render :new }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+       
+         render json: @user.errors, status: 422
       end
-    end
   end
 
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'User was successfully updated.' }
-        format.json { render :show, status: :ok, location: @user }
+   if Session.find_by(token: params[:token]) 
+        
+        if @user = User.find(params[:id])
+         @user.username = params[:username]
+         @user.password = params[:password]
+         @user.password_confirmation = params[:password_confirmation]
+         @user.firstname = params[:firstname]
+          if @user.save
+            format.json { render json: @user, status: 200 }
+          end
+        else
+            format.json { render json: @user.errors, status: 422 }
+        end
       else
-        format.html { render :edit }
-        format.json { render json: @user.errors, status: :unprocessable_entity }
+      format.json { render json: {:error => "not-found-authtoken"}.to_json, status: 422 }
       end
     end
   end
@@ -54,10 +69,15 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user.destroy
+    
     respond_to do |format|
-      format.html { redirect_to users_url, notice: 'User was successfully destroyed.' }
-      format.json { head :no_content }
+    if Session.find_by(token: params[:token])
+        if @user = User.find(params[:id])
+          @user.destroy
+        end
+      else
+      format.json {render json: {:error => "not-found-authtoken"}.to_json, status: 422}
+      end
     end
   end
 
@@ -69,6 +89,7 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:username, :password, :firstname)
+      params.require(:user).permit(:username, :password, :password_confirmation, :firstname)
     end
+end
 end
