@@ -3,7 +3,7 @@ class CreateProducts < ActiveRecord::Migration
     create_table :products do |t|
       t.string :name
       t.string :description
-      t.string :status
+      t.boolean :status
 
       t.timestamps
     end
