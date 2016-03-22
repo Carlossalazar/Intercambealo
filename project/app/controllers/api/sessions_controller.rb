@@ -1,5 +1,7 @@
-class SessionsController < ApplicationController
-  before_action :set_session, only: [:show, :edit, :update, :destroy]
+module Api
+
+  class SessionsController < ApplicationController
+    before_action :set_session, only: [:show, :edit, :update, :destroy]
 
   # GET /sessions
   # GET /sessions.json
@@ -28,10 +30,8 @@ class SessionsController < ApplicationController
 
     respond_to do |format|
       if @session.save
-        format.html { redirect_to @session, notice: 'Session was successfully created.' }
         format.json { render :show, status: :created, location: @session }
       else
-        format.html { render :new }
         format.json { render json: @session.errors, status: :unprocessable_entity }
       end
     end
@@ -42,10 +42,8 @@ class SessionsController < ApplicationController
   def update
     respond_to do |format|
       if @session.update(session_params)
-        format.html { redirect_to @session, notice: 'Session was successfully updated.' }
         format.json { render :show, status: :ok, location: @session }
       else
-        format.html { render :edit }
         format.json { render json: @session.errors, status: :unprocessable_entity }
       end
     end
@@ -60,15 +58,53 @@ class SessionsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  def authenticate
 
-  private
+    user = User.find_by(username: params[:username])
+    @session = Session.new
+    if user && user.authenticate(params[:password])
+
+      token = rand(36**8).to_s(36)
+      date = Time.now
+
+      @session.token = token
+      @session.date = date
+      @session.id_user = user.id
+      @session.save
+
+      render json: @session.token, status: 200 
+
+    else
+      render json: @session.errors, status: 422 
+    end
+
+    
+  end
+  def logout
+
+
+    if Session.find_by(token: params[:token]) 
+      @sessions = Session.find(params[:id])
+      if @sessions.destroy
+
+        format.json { render json: @sessions, status: 200  }
+      end
+    else
+     render json: {:error => "not-found-authtoken"}.to_json, status: 422
+   end
+ end
+
+ private
     # Use callbacks to share common setup or constraints between actions.
     def set_session
       @session = Session.find(params[:id])
     end
-
+    def set_authenticate
+      @user = User.find_by_username(params[:username])
+    end
     # Never trust parameters from the scary internet, only allow the white list through.
     def session_params
       params.require(:session).permit(:token, :date, :id_user)
     end
+  end
 end

@@ -1,13 +1,14 @@
 module Api
 
-class ProductsController < ApplicationController
-  before_action :set_product, only: [:show, :edit, :update, :destroy]
-  before_action :product_params, only: [:create]
+  class ProductsController < ApplicationController
+    before_action :set_product, only: [:show, :edit, :update, :destroy]
+    before_action :product_params, only: [:create]
 
   # GET /products
   # GET /products.json
   def index
-    @products = Product.all
+    products = Product.all
+    render json: products, status: 200
   end
 
   # GET /products/1
@@ -30,12 +31,12 @@ class ProductsController < ApplicationController
     product = Product.new(product_params)
 
     
-      if product.save
+    if product.save
 
-        render product, status: 201 
-      else
-        render json: product.errors, status: :unprocessable_entity 
-      end
+      render json: product, status: 201 
+    else
+      render json: product.errors, status: :unprocessable_entity 
+    end
     
   end
 
@@ -43,12 +44,12 @@ class ProductsController < ApplicationController
   # PATCH/PUT /products/1.json
   def update
     
-      if @product.update(product_params)
-        
-        render product, status: :ok
-      else
+    if @product.update(product_params)
+      
+      render product, status: :ok
+    else
 
-        render json: @product.errors, status: :unprocessable_entity 
+      render json: @product.errors, status: :unprocessable_entity 
       
     end
   end
@@ -58,7 +59,7 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     
-      head :no_content 
+    head :no_content 
     
   end
 
@@ -72,5 +73,5 @@ class ProductsController < ApplicationController
     def product_params
       params.require(:product).permit(:name, :description, :status)
     end
-end
+  end
 end
