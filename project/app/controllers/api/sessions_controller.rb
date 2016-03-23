@@ -1,7 +1,8 @@
 module Api
 
   class SessionsController < ApplicationController
-    before_action :set_session, only: [:show, :edit, :update, :destroy]
+   # before_action :set_session, only: [:show, :edit, :update, :destroy]
+   before_action :set_authenticate, only: [:new, :create, :authenticate]
 
   # GET /sessions
   # GET /sessions.json

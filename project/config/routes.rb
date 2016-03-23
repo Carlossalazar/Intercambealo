@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
 
-
+resources :sessions do
+    collection do
+      post 'authenticate'
+      get 'logout'
+      end
+    end
    namespace :api, path: '/'do 
 
     resources :transactions
@@ -9,7 +14,9 @@ Rails.application.routes.draw do
 
     resources :users
 
-    resources :sessions
+    
+
+    
 
   end
   # The priority is based upon order of creation: first created -> highest priority.
