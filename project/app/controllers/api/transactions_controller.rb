@@ -1,3 +1,4 @@
+module Api
 class TransactionsController < ApplicationController
   before_action :set_transaction, only: [:show, :edit, :update, :destroy]
 
@@ -71,4 +72,5 @@ class TransactionsController < ApplicationController
     def transaction_params
       params.require(:transaction).permit(:product_req_id, :product_offert_id, :status)
     end
+  end
 end

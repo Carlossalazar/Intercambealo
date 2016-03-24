@@ -1,12 +1,7 @@
 Rails.application.routes.draw do
 
-resources :sessions do
-    collection do
-      post 'authenticate'
-      get 'logout'
-      end
-    end
-   namespace :api, path: '/'do 
+
+   namespace :api, path: '/' do
 
     resources :transactions
 
@@ -14,7 +9,12 @@ resources :sessions do
 
     resources :users
 
-    
+    resources :sessions do
+      collection do
+        post 'authenticate'
+        get 'logout'
+      end
+    end
 
     
 
