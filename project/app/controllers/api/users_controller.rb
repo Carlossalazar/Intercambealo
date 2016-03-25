@@ -45,7 +45,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    respond_to do |format|
+    
    if Session.find_by(token: request.headers['token']) 
         
         if @user = User.find(params[:id])
@@ -54,32 +54,31 @@ class UsersController < ApplicationController
          @user.password_confirmation = params[:password_confirmation]
          @user.firstname = params[:firstname]
           if @user.save
-            format.json { render json: @user, status: 200 }
+            render json: @user, status: 200 
           end
         else
-            format.json { render json: @user.errors, status: 422 }
+            render json: @user.errors, status: 422 
         end
       else
-      format.json { render json: {:error => "not-found-authtoken"}.to_json, status: 422 }
+            render json: {:error => "not-found-authtoken"}.to_json, status: 422 
       end
-    end
+    
   end
 
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    
-    respond_to do |format|
+        
     if Session.find_by(token: request.headers['token'])
         if @user = User.find(params[:id])
           @user.destroy
-          format.json {render json: {:echo => "succesfull"}.to_json, status: 200}
+            render json: {:echo => "succesfull"}.to_json, status: 200
 
         end
       else
-      format.json {render json: {:error => "not-found-authtoken"}.to_json, status: 422}
+       render json: {:error => "not-found-authtoken"}.to_json, status: 422
       end
-    end
+    
   end
 
   private
