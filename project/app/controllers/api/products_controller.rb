@@ -43,7 +43,16 @@ module Api
   end
 
   # GET /products/1/edit
-  def edit
+  def search
+     if Session.find_by(token: request.headers['token'])
+        if @product = Product.find(params[:name])
+          render json: @product, status: 200
+        else
+          render json:{:error => "not-found"}.to_json, status: 422
+        end
+      else
+          render json: {:error => "not-found-authtoken"}.to_json, status: 422
+      end
   end
 
   # POST /products
