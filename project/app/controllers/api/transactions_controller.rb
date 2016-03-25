@@ -25,22 +25,24 @@ class TransactionsController < ApplicationController
   # POST /transactions
   # POST /transactions.json
   def create
-    @transaction = Transaction.new
-      respond_to do |format|
+    
+      
       if Session.find_by(token: params[:token])
+
+        @transaction = Transaction.new
       
         @transaction.product_req_id = params[:product_req_id]
         @transaction.product_offert_id = params[:product_offert_id]
         @transaction.status = params[:status]
         if @transaction.save
-         format.json { render json: @transaction, status: 201 }
+          render json: @transaction, status: 201
         else
-         format.json {render json: @transaction.errors, status: 422 }
+          render json: @transaction.errors, status: 422 
         end
       else
-       format.json {render json: {:error => "not-found-authtoken"}.to_json, status: 422}
+        render json: {:error => "not-found-authtoken"}.to_json, status: 422
       end
-    end
+    
   end
 
   # PATCH/PUT /transactions/1
