@@ -7,8 +7,10 @@ module Api
   # GET /products
   # GET /products.json
   def index
-    products = Product.all
-    render json: products, status: 200
+    
+      products = Product.all
+                render json: products, status: 200
+    
   end
 
   # GET /products/1
@@ -31,16 +33,16 @@ module Api
     @product = Product.new
     
     if Session.find_by(token: params[:token])
-      
+
 
      @product.name = params[:name]
      @product.description = params[:description]
      @product.status = params[:status]
      if @product.save
-      
+
       render json: @product, status: 201
     else
-      
+
      render json: @product.errors, status: 422 
    end
    
@@ -54,13 +56,25 @@ end
   # PATCH/PUT /products/1.json
   def update
     
-    if @product.update(product_params)
-      
-      render product, status: :ok
-    else
+    respond_to do |format|
 
-      render json: @product.errors, status: :unprocessable_entity 
-      
+      if Session.find_by(token: params[:token]) 
+     
+        if @product = Product.find(params[:id])
+          
+          @product.name = params[:name]
+          @product.description = params[:description]
+          @product.status = params[:status]
+          if @product.save
+            format.json { render json: @product, status: 200 }
+          end
+        else
+        format.json { render json: @product.errors, status: 422 }
+        end
+      else
+        format.json { render json: {:error => "not-found-authtoken"}.to_json, status: 422 }
+      end
+
     end
   end
 
