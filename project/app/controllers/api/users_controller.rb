@@ -73,6 +73,8 @@ class UsersController < ApplicationController
     if Session.find_by(token: params[:token])
         if @user = User.find(params[:id])
           @user.destroy
+          format.json {render json: {:echo => "succesfull"}.to_json, status: 200}
+
         end
       else
       format.json {render json: {:error => "not-found-authtoken"}.to_json, status: 422}
