@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-   if Session.find_by(token: params[:token]) 
+   if Session.find_by(token: request.headers['token']) 
         
         if @user = User.find(params[:id])
          @user.username = params[:username]
@@ -70,7 +70,7 @@ class UsersController < ApplicationController
   def destroy
     
     respond_to do |format|
-    if Session.find_by(token: params[:token])
+    if Session.find_by(token: request.headers['token'])
         if @user = User.find(params[:id])
           @user.destroy
           format.json {render json: {:echo => "succesfull"}.to_json, status: 200}

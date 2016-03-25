@@ -6,7 +6,7 @@ class TransactionsController < ApplicationController
   # GET /transactions.json
   def index
    
-      if Session.find_by(token: params[:token])
+      if Session.find_by(token: request.headers['token'])
          @transactions = Transaction.all
         render json: @transactions, status: 200
     else
@@ -33,7 +33,7 @@ class TransactionsController < ApplicationController
   def create
     
       
-      if Session.find_by(token: params[:token])
+      if Session.find_by(token: request.headers['token'])
 
         @transaction = Transaction.new
       

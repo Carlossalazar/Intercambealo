@@ -84,7 +84,7 @@ module Api
   def logout
 
 
-    if Session.find_by(token: params[:token]) 
+    if Session.find_by(token: request.headers['token']) 
       @sessions = Session.find(params[:id])
       if @sessions.destroy
 
