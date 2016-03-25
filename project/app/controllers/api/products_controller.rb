@@ -28,17 +28,27 @@ module Api
   # POST /products
   # POST /products.json
   def create
-    product = Product.new(product_params)
-
+    @product = Product.new
     
-    if product.save
+    if Session.find_by(token: params[:token])
+      
 
-      render json: product, status: 201 
+     @product.name = params[:name]
+     @product.description = params[:description]
+     @product.status = params[:status]
+     if @product.save
+      
+      render json: @product, status: 201
     else
-      render json: product.errors, status: :unprocessable_entity 
-    end
-    
-  end
+      
+     render json: @product.errors, status: 422 
+   end
+   
+ else
+   render json: @product.errors, status: 402 
+ end
+ 
+end
 
   # PATCH/PUT /products/1
   # PATCH/PUT /products/1.json
