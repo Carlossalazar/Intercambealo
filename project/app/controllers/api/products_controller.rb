@@ -92,16 +92,16 @@ end
   # DELETE /products/1
   # DELETE /products/1.json
   def destroy
-     respond_to do |format|
+     
       if Session.find_by(token: params[:token])
         if @product = Product.find(params[:id])
           @product.destroy
-         
+          head :no_content         
         end
       else
-      format.json {render json: {:error => "not-found-authtoken"}.to_json, status: 422}
+      json render json: {:error => "not-found-authtoken"}.to_json, status: 422
       end
-    end   
+      
   end
 
   private
