@@ -5,7 +5,13 @@ class TransactionsController < ApplicationController
   # GET /transactions
   # GET /transactions.json
   def index
-    @transactions = Transaction.all
+   
+      if Session.find_by(token: params[:token])
+         @transactions = Transaction.all
+        render json: @transactions, status: 200
+    else
+      render json: {:error => "not-found-authtoken"}.to_json, status: 422
+    end
   end
 
   # GET /transactions/1
