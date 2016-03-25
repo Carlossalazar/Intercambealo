@@ -16,6 +16,17 @@ module Api
   # GET /products/1
   # GET /products/1.json
   def show
+    
+      if Session.find_by(token: params[:token])
+        if @product = Product.find(params[:id])
+          render json: @product, status: 200
+        else
+          render json:{:error => "not-found"}.to_json, status: 422
+        end
+      else
+          render json: {:error => "not-found-authtoken"}.to_json, status: 422
+      end
+    
   end
 
   # GET /products/new
