@@ -8,8 +8,16 @@ module Api
   # GET /products.json
   def index
     
-      products = Product.all
-                render json: products, status: 200
+      @products = Product.all
+      if Session.find_by(token: request.headers['token'])
+        if product = Product.find_by(name: params[:name])
+          @products = product
+        else
+          render json: @products, status: 200
+        end 
+      else
+       render json: {:error => "not-found-authtoken"}.to_json, status: 422
+      end
     
   end
 
@@ -17,7 +25,7 @@ module Api
   # GET /products/1.json
   def show
     
-      if Session.find_by(token: params[:token])
+      if Session.find_by(token: request.headers['token'])
         if @product = Product.find(params[:id])
           render json: @product, status: 200
         else
@@ -42,8 +50,8 @@ module Api
   # POST /products.json
   def create
     @product = Product.new
-    
-    if Session.find_by(token: params[:token])
+   
+    if Session.find_by(token: request.headers['token'])
 
 
      @product.name = params[:name]
@@ -69,7 +77,7 @@ end
     
     respond_to do |format|
 
-      if Session.find_by(token: params[:token]) 
+      if Session.find_by(token: request.headers['token']) 
      
         if @product = Product.find(params[:id])
           
@@ -93,7 +101,7 @@ end
   # DELETE /products/1.json
   def destroy
      
-      if Session.find_by(token: params[:token])
+      if Session.find_by(token: request.headers['token'])
         if @product = Product.find(params[:id])
           @product.destroy
           head :no_content         
