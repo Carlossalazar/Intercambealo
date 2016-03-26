@@ -9,9 +9,11 @@ module Api
   def index
     
       @products = Product.all
+       
       if Session.find_by(token: request.headers['token'])
         if product = Product.find_by(name: params[:name])
-          @products = product
+          
+          render json: product , status:200
         else
           render json: @products, status: 200
         end 
@@ -19,7 +21,7 @@ module Api
        render json: {:error => "not-found-authtoken"}.to_json, status: 422
       end
     
-  end
+   end
 
   # GET /products/1
   # GET /products/1.json

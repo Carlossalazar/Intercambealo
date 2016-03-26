@@ -83,11 +83,11 @@ module Api
   end
   def logout
 
-    if Session.find_by(token: request.headers['token']) 
-      @sessions = Session.find(params[:id])
+    if @sessions = Session.find_by(token: request.headers['token']) 
+     # @sessions = Session.find(params[:id])
       if @sessions.destroy
 
-        render json: @sessions, status: 200  
+        render :nothing =>true, status: 200
       end
     else
      render json: {:error => "not-found-authtoken"}.to_json, status: 422
